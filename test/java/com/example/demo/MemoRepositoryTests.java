@@ -114,18 +114,23 @@ public class MemoRepositoryTests {
    // @Test
    // 정렬 조건 추가해보기: sort 객체를 이용해서 Pageable 객체를 얻어낼 때 파라미터로 넘긴다
    public void testSort() {
-	   // sort.by()를 통해서 객체얻기
-	   Sort sort1 = Sort.by("mno").descending();
-	   Sort sort2 = Sort.by("memoText").ascending();
-	   
-	   Sort sortAll = sort1.and(sort2);
-	   
-	   Pageable pageable = PageRequest.of(0, 10, sortAll);
-	   Page<Memo> page = memoRepository.findAll(pageable);
-	   
-	   page.get().forEach(memo -> {
-		   System.out.println(memo);
-	   });
+      // sort.by()를 통해서 객체얻기
+      // mno 기준 내림차순 정렬
+      Sort sort1 = Sort.by("mno").descending();
+      // memoText 기준 오름차순 정렬
+      Sort sort2 = Sort.by("memoText").ascending();
+
+      // 정렬 합치기
+      Sort sortAll = sort1.and(sort2);
+
+      //0 페이지 10개 데이터 sortAll 정렬
+      Pageable pageable = PageRequest.of(0, 10, sortAll);
+      // 전체 데이터 조회 + 페이징
+      Page<Memo> page = memoRepository.findAll(pageable);
+      
+      page.get().forEach(memo -> {
+         System.out.println(memo);
+      });
    }
    
    /*
@@ -134,25 +139,28 @@ public class MemoRepositoryTests {
     */
    // @Test
    public void testQueryMethod() {
-//	   List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70L, 80L);
-//	   for(Memo memo : list) {
-//		   System.out.println(memo);
-//	   }
-	   Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
-	   Page<Memo> page = memoRepository.findByMnoBetween(10L, 50L, pageable);
-	   
-	   page.get().forEach(memo -> {
-		   System.out.println(memo);
-	   });
+//      // mno BETWEEN 70 AND 80 mno DESC 정렬
+//      List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70L, 80L);
+//      for(Memo memo : list) {
+//         System.out.println(memo);
+//      }
+      // 0페이지 10개 mno DESC
+      Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+      // mno BETWEEN 10 AND 50
+      Page<Memo> page = memoRepository.findByMnoBetween(10L, 50L, pageable);
+      
+      page.get().forEach(memo -> {
+         System.out.println(memo);
+      });
    }
    
    // Query를 이용한 select test
    // @Test
    public void querySel() {
-	   List<Memo> list = memoRepository.getListDesc();
-	   for(Memo memo : list) {
-		   System.out.println(memo);
-	   }
+      List<Memo> list = memoRepository.getListDesc();
+      for(Memo memo : list) {
+         System.out.println(memo);
+      }
    }
    
    // @Test
@@ -162,19 +170,19 @@ public class MemoRepositoryTests {
    
    // @Test
    public void queryUp2() {
-	   Memo memo = Memo.builder().mno(99L).memoText("바꿈2").build();
-	   System.out.println(memoRepository.updateMemoText2(memo));
+      Memo memo = Memo.builder().mno(99L).memoText("바꿈2").build();
+      System.out.println(memoRepository.updateMemoText2(memo));
    }
    
    // @Test
    public void queryPage() {
-	   System.out.println(memoRepository.getListWithQuery(50L, PageRequest.of(0,10)).getContent());
-	}
+      System.out.println(memoRepository.getListWithQuery(50L, PageRequest.of(0,10)).getContent());
+   }
    
    @Test
    public void nativeSql() {
-	   List<Object[]> list = memoRepository.getNativeResult();
-	   System.out.println(list);
+      List<Object[]> list = memoRepository.getNativeResult();
+      System.out.println(list);
    }
    
 }
